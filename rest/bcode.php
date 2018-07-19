@@ -31,6 +31,7 @@
 		$rCount = $stmt_validate->rowcount();//Row count
 		
 		//Check condition and insert into barcode table
+		//2018-07-18
 		$retVal = (rCount>0) ? '0' : 
 				$setValue = $barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime);
 
