@@ -57,9 +57,9 @@
 				# for full completed
 				$barcodeManager->UpdateTransactionState($_Iid,'DONE');
 			}
-
-
-		echo $retVal;		
+			
+			#retun status
+			echo $retVal;		
 		}
 	}
 	
