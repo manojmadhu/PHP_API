@@ -23,11 +23,12 @@ class BarcodeManager
 		return $this->connection->LASTINSERTID();
 	}
 
-	public function InsertBarcodeData($trid,$barcode,$scantime){
-		$stmt = $this->connection->prepare("INSERT INTO tbbarcodes (transId,barcode,scanDate) VALUES (?,?,?)");
+	public function InsertBarcodeData($trid,$barcode,$scantime,$status){
+		$stmt = $this->connection->prepare("INSERT INTO tbbarcode (transId,barcode,scanDate,status) VALUES (?,?,?,?)");
 		$stmt->bindParam(1,$trid);
 		$stmt->bindParam(2,$barcode);
-		$stmt->bindParam(3,$scantime);		
+		$stmt->bindParam(3,$scantime);
+		$stmt->bindParam(4,$status);	
 		$stmt->execute();		
 	}
 
@@ -40,13 +41,30 @@ class BarcodeManager
 
 
 	public function ValidateScanBarcode($barcode_){
-		$query = "SELECT ID FROM tbbarcodes WHERE barcode = ?";
+		$query = "SELECT ID FROM tbbarcode WHERE barcode = ?";
 		$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
 		$stmt->bindParam(1,$barcode_);
 		$stmt->execute();
 		return $stmt;
 	}
 
+	public function InsertRejectBarcode($trid_,$barcode_){
+		$query = "INSERT INTO tbreject_barcode (barcode,transDate,transId) VALUES (?,NOW(),?)";		
+		$stmt = $this->connection->prepare($query);
+		$stmt->bindParam(1,$barcode_);
+		$stmt->bindParam(2,$trid_);		
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function UpdateTransactionState($trid_,$STATUS_){
+		$query = "UPDATE tbtransaction SET STATUS = ? WHERE ID = ?";
+		$stmt = $this->connection->prepare($query);
+		$stmt->bindParam(1,$STATUS_);
+		$stmt->bindParam(2,$trid_);
+		$stmt->execute();
+		return $stmt;
+	}
 }
 
 ?>

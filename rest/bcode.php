@@ -13,6 +13,9 @@
 	static $BARCODE='BARCODE';
 	static $SCAN_TIME='SCAN_DATE_TIME';
 
+	$RSTATE = false;
+	$OSTATE = false;
+
 	$barcodeManager = new BarcodeManager();	
 
 	$_uid = $jsonData[$UID];
@@ -29,11 +32,34 @@
 		//Check barcode is already in Database
 		$stmt_validate = $barcodeManager->ValidateScanBarcode($_barcode);
 		$rCount = $stmt_validate->rowcount();//Row count
-		
-		//Check condition and insert into barcode table	
-		$retVal = (rCount>0) ? '0' : 
-				$setValue = $barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime);
+				
 
+			if ($rCount>0) {
+				#Already scanned barcodes
+				$barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime,'REJECT');
+				$barcodeManager->InsertRejectBarcode($_Iid,$_barcode);
+				$retVal = '{"State":"0"}';
+				$RSTATE = true;
+			}else {
+				#Newly scanned barcodes
+				$retVal = $barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime,'DONE').'{"State":"1"}';
+				$OSTATE = true;
+			}
+
+			//Managing transaction status
+			if ($RSTATE && $OSTATE) {
+				# for partially completed
+				$barcodeManager->UpdateTransactionState($_Iid,'PARTIAL');
+			}else if ($RSTATE==true && $OSTATE==false) {
+				# for rejects
+				$barcodeManager->UpdateTransactionState($_Iid,'REJECT');
+			}else if ($RSTATE==false && $OSTATE==true) {
+				# for full completed
+				$barcodeManager->UpdateTransactionState($_Iid,'DONE');
+			}
+
+
+		echo $retVal;		
 		}
 	}
 	
