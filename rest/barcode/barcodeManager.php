@@ -4,6 +4,7 @@
 */
 
 include_once 'database/database.php';
+include_once 'pointCalculation.php';
 
 class BarcodeManager
 {
@@ -24,12 +25,23 @@ class BarcodeManager
 	}
 
 	public function InsertBarcodeData($trid,$barcode,$scantime,$status){
-		$stmt = $this->connection->prepare("INSERT INTO tbbarcode (transId,barcode,scanDate,status) VALUES (?,?,?,?)");
-		$stmt->bindParam(1,$trid);
-		$stmt->bindParam(2,$barcode);
-		$stmt->bindParam(3,$scantime);
-		$stmt->bindParam(4,$status);	
-		$stmt->execute();		
+		ty{
+
+			$calculator = new PointCalculator($barcode);			
+			$point = $calculator->getPoint();
+
+			$stmt = $this->connection->prepare("INSERT INTO tbbarcode (transId,barcode,scanDate,status,points) VALUES (?,?,?,?,?)");
+			$stmt->bindParam(1,$trid);
+			$stmt->bindParam(2,$barcode);
+			$stmt->bindParam(3,$scantime);
+			$stmt->bindParam(4,$status);
+			$stmt->bindParam(5,$point);
+			$stmt->execute();	
+
+		}catch(Exception $e) {
+ 			//echo 'Message: ' .$e->getMessage();
+		}
+			
 	}
 
 	public function ReadBarcode(){
@@ -65,6 +77,16 @@ class BarcodeManager
 		$stmt->execute();
 		return $stmt;
 	}
+
+	public function RetrivewPackPoint($pack_){
+		$query = "SELECT POINTS FROM tbpoint_schema WHERE PACK = ?";
+		$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+		$stmt->bindParam(1,$pack_);
+		$stmt->execute();
+		return $stmt;
+	}
+		}
+
 }
 
 ?>
