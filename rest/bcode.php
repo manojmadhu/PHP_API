@@ -42,11 +42,12 @@
 				$RSTATE = true;
 			}else {
 				#Newly scanned barcodes
-				$retVal = $barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime,'DONE').'{"State":"1"}';
+				$pointval = $barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime,'DONE');
+				$retVal = json_encode(array('Points' => $pointval,'State'=>"1"));				 
 				$OSTATE = true;
 			}
 
-			//Managing transaction status
+			//Managing transaction status, transaction header table
 			if ($RSTATE && $OSTATE) {
 				# for partially completed
 				$barcodeManager->UpdateTransactionState($_Iid,'PARTIAL');
@@ -58,6 +59,7 @@
 				$barcodeManager->UpdateTransactionState($_Iid,'DONE');
 			}
 			
+
 			#retun status
 			echo $retVal;		
 		}

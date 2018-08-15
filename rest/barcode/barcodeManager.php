@@ -25,9 +25,9 @@ class BarcodeManager
 	}
 
 	public function InsertBarcodeData($trid,$barcode,$scantime,$status){
-		ty{
+		try{
 
-			$calculator = new PointCalculator($barcode);			
+			$calculator = new PointCalculator($barcode);					
 			$point = $calculator->getPoint();
 
 			$stmt = $this->connection->prepare("INSERT INTO tbbarcode (transId,barcode,scanDate,status,points) VALUES (?,?,?,?,?)");
@@ -37,19 +37,19 @@ class BarcodeManager
 			$stmt->bindParam(4,$status);
 			$stmt->bindParam(5,$point);
 			$stmt->execute();	
-
+			return $point;
+			
 		}catch(Exception $e) {
  			//echo 'Message: ' .$e->getMessage();
-		}
-			
+		}			
 	}
 
-	public function ReadBarcode(){
-		$query = "SELECT * FROM tbbarcodes";
-		$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
-		$stmt->execute();
-		return $stmt;
-	}
+	// public function ReadBarcode(){
+	// 	$query = "SELECT * FROM tbbarcodes";
+	// 	$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+	// 	$stmt->execute();
+	// 	return $stmt;
+	// }
 
 
 	public function ValidateScanBarcode($barcode_){
@@ -70,10 +70,11 @@ class BarcodeManager
 	}
 
 	public function UpdateTransactionState($trid_,$STATUS_){
-		$query = "UPDATE tbtransaction SET STATUS = ? WHERE ID = ?";
+		$query = "UPDATE tbtransaction SET STATUS = ? , transPoint=(SELECT SUM(points) FROM tbbarcode where transId = ?) WHERE ID = ?";
 		$stmt = $this->connection->prepare($query);
 		$stmt->bindParam(1,$STATUS_);
 		$stmt->bindParam(2,$trid_);
+		$stmt->bindParam(3,$trid_);
 		$stmt->execute();
 		return $stmt;
 	}
@@ -85,7 +86,7 @@ class BarcodeManager
 		$stmt->execute();
 		return $stmt;
 	}
-		}
+		
 
 }
 
