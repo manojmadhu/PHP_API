@@ -14,12 +14,13 @@
 	 		$Connection = $dbClass->getConnection();
 			$this->connection=$Connection;
 		}
+		
 
 		//check user name & password
 		public function validateUser($uname,$pword){
 			try {
 				$query = 
-					"SELECT ID,NAME,NIC,CONTACTNUMBER,EMAIL FROM tbusers WHERE tbusers.nic = '$uname' AND tbusers.password = '$pword'";
+					"SELECT ID,NAME,NIC,CONTACTNUMBER,EMAIL FROM tbuser WHERE tbuser.nic = '$uname' AND tbuser.password = '$pword'";
 				$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR=>PDO::CURSOR_SCROLL));
 				$stmt->execute();
 				
@@ -34,9 +35,9 @@
 		public function RegisterUser($uname,$nic,$contact,$email,$mobile,$imei,$password){
 			try {
 				$query = 
-					"INSERT INTO tbusers (
-					tbusers.name,tbusers.nic,tbusers.contactNumber,tbusers.email,tbusers.mobileNumber,tbusers.imeiNumber,tbusers.password)
-					VALUES ('$uname','$nic',$contact,'$email',$mobile,'$imei','$password')";
+					"INSERT INTO tbuser (
+					tbuser.name,tbuser.nic,tbuser.contactNumber,tbuser.email,tbuser.mobileNumber,tbuser.imeiNumber,tbuser.password,tbuser.datetime)
+					VALUES ('$uname','$nic',$contact,'$email',$mobile,'$imei','$password',NOW())";
 					
 					$this->connection->QUERY($query);
 				
@@ -49,7 +50,7 @@
 			try{
 
 				$query = 
-					"SELECT ID FROM tbusers WHERE tbusers.nic = '$nic'";
+					"SELECT ID FROM tbuser WHERE tbuser.nic = '$nic'";
 				$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR=>PDO::CURSOR_SCROLL));
 				$stmt->execute();
 

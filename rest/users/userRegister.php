@@ -1,7 +1,7 @@
 <?php
 	header('Content-type:application/json;charset=utf-8');
 	include_once 'userManager.php';
-	include_once '../database/databaseManager.php';
+	include_once '../database/database.php';
 
 	$uname = "";$contactnum="";$email="";$imei="";$mobilenum="";$nic="";$pword="";
 
