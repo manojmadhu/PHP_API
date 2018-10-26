@@ -1,8 +1,8 @@
 <?php
 
-include_once './database/database.php';
-include_once './barcode/barcode.php';
-include_once './users/userManager.php';
+//include_once 'database/database.php';
+// include_once 'barcode/barcode.php';
+include_once 'users/userlogin.php';
  	
  	$dbclass = new Database();
     $Connection = $dbclass->getConnection();
