@@ -30,7 +30,4 @@ include_once './users/userManager.php';
 		 array_push($barcodes,$barcodesArray);		
 	}    
     echo json_encode($barcodes);
-
- echo "hello test host";
-
 ?>
