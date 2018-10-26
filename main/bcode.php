@@ -1,7 +1,7 @@
 <?php
 //header('Content-type:application/json;charset=utf-8');
 	
-	include_once 'barcode/barcodeManager.php';
+	include_once '../barcode/barcodeManager.php';
 
 	$MainObject = file_get_contents('php://input');
 	$jsonData = json_decode($MainObject,true);
