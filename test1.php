@@ -31,6 +31,6 @@ include_once './users/userManager.php';
 	}    
     echo json_encode($barcodes);
 
-//hello test host
+ echo "hello test host";
 
 ?>
