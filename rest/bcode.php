@@ -38,7 +38,7 @@
 				#Already scanned barcodes
 				$barcodeManager->InsertBarcodeData($_Iid,$_barcode,$_scantime,'REJECT');
 				$barcodeManager->InsertRejectBarcode($_Iid,$_barcode);
-				$retVal = '{"State":"0"}';
+				$retVal = '{"Points":"0","State":"0"}';
 				$RSTATE = true;
 			}else {
 				#Newly scanned barcodes

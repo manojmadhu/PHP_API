@@ -3,7 +3,7 @@
 * 
 */
 
-include_once 'database/database.php';
+include_once '../database/database.php';
 include_once 'pointCalculation.php';
 
 class BarcodeManager
@@ -85,6 +85,31 @@ class BarcodeManager
 		$stmt->bindParam(1,$pack_);
 		$stmt->execute();
 		return $stmt;
+	}
+
+	public function RetrivewRedeemed_points($uid_){
+		try{
+			$query = "SELECT (CASE WHEN SUM(points) is null THEN 0 ELSE SUM(points) END) AS Rpoints FROM tbredeemed_points WHERE uid = ?";
+			$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+			$stmt->bindParam(1,$uid_);
+			$stmt->execute();
+			return $stmt;	
+		}catch(Exception $ex){
+			//echo 'error '.$ex->getMessage();
+		}		
+	}
+
+	public function RetrivewTotal_points($uid_){
+		try{
+			$query="SELECT (CASE WHEN SUM(transPoint) is null then 0 else SUM(transPoint) END) as Tpoints 
+					from tbtransaction where USER = ? AND STATUS <> 'REJECT'";
+			$stmt = $this->connection->prepare($query,array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+			$stmt->bindParam(1,$uid_);
+			$stmt->execute();
+			return $stmt;
+		}catch(Exception $ex){
+			//$ex->getMessage();
+		}
 	}
 		
 
